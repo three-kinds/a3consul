@@ -7,6 +7,8 @@ from a3py.simplified.concurrence import force_exit_from_threads
 from threading import Thread
 from consul import Consul
 
+from a3consul.utils import patch_http_client_with_timeout
+
 
 class NodeThread(Thread):
     logger = logging.getLogger(__name__)
@@ -40,7 +42,7 @@ class NodeThread(Thread):
                 self.logger.debug(f'[{self._topic}]renew成功')
                 return True
             except Exception as e:
-                self.logger.debug(f'[{self._topic}]renew出现异常: {e}')
+                self.logger.warning(f'[{self._topic}]renew出现异常: {e}')
 
             # 出现异常后，每秒重试一次
             time.sleep(1)
@@ -52,6 +54,8 @@ class NodeThread(Thread):
 
     def run(self):
         conf = self._conf['renew']
+        per_request_timeout_seconds = conf.get('per_request_timeout_seconds', None) or 2
+        patch_http_client_with_timeout(self._client, per_request_timeout_seconds)
         while True:
             is_success = self._renew_session(timeout_seconds=conf['timeout_seconds'])
             if is_success:
