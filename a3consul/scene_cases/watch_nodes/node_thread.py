@@ -27,7 +27,16 @@ class NodeThread(Thread):
         self._client = Consul(**self._conf['init'])
         self._session_id = self._client.session.create(**self._conf['session'], behavior='delete')
 
-        nodes_path = f'{self._nodes_path}{uuid.uuid4().hex}'
+        node_name = uuid.uuid4().hex
+        _node_conf = self._conf.get('node') or dict()
+        prefix = _node_conf.get('prefix') or None
+        if prefix is not None:
+            node_name = f'{prefix}-{node_name}'
+        max_length = _node_conf.get('max_length') or None
+        if max_length is not None:
+            node_name = node_name[:max_length]
+
+        nodes_path = f'{self._nodes_path}{node_name}'
         node_id = nodes_path.rsplit('/', 2)[-1]
 
         self._client.kv.put(key=nodes_path, value='', acquire=self._session_id)

@@ -13,11 +13,15 @@ if __name__ == '__main__':
             topic="测试",
             conf={
                 "init": {
-                    "host": "192.168.5.14",
+                    "host": "127.0.0.1",
                     "port": 8501,
                     "scheme": "https",
                     "verify": "/data/ssl/ca.pem",
                     "cert": ('/data/ssl/client.pem', '/data/ssl/client-key.pem')
+                },
+                "node": {
+                    "prefix": "tk",
+                    "max_length": 64,
                 },
                 "session": {
                     "ttl": 10,
