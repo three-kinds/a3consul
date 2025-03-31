@@ -1,6 +1,2 @@
-a3py >= 0.1.9
-py-consul >= 1.4.1
-
-# 测试与维护
-coverage >= 6.3.2
-twine
+a3py >= 0.3.0
+py-consul >= 1.5.5

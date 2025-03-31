@@ -1,12 +1,10 @@
 # a3consul
 
-It is just a thin wrapper of py-consul.
-
-[History.](HISTORY.md)
+`a3redis` is a simple wrapper around `py-consul` to make it easier to use.
 
 ## Install
 
-```shell script
+```shell
 pip install a3consul
 
 ```
