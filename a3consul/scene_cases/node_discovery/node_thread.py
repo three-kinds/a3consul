@@ -7,7 +7,7 @@ from a3py.simplified.concurrence import force_exit_from_threads
 from threading import Thread
 from consul import Consul
 
-from a3consul.utils import patch_http_client_with_timeout
+from a3consul.patch_utils import patch_http_client_with_timeout
 
 
 class NodeThread(Thread):
