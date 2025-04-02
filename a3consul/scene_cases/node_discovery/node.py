@@ -34,6 +34,7 @@ class Node:
         return node_id
 
     def _renew_session(self, timeout_seconds: float) -> bool:
+        assert self._client is not None
         start_tick = time.monotonic()
         while True:
             try:
