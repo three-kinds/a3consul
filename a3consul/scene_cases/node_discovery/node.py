@@ -26,7 +26,7 @@ class Node:
         self._session_id = self._client.session.create(**self._conf["session"], behavior="delete")
 
         node_name = uuid.uuid4().hex
-        node_path = f"{self._conf['node_path']}{node_name}"
+        node_path = f"{self._conf['node_path'].lstrip('/')}{node_name}"
         node_id = node_path.rsplit("/", 2)[-1]
 
         self._client.kv.put(key=node_path, value="", acquire=self._session_id)
@@ -65,9 +65,10 @@ class Node:
         self.logger.critical(f"[{self._conf['topic']}]Renew failed.")
         self._on_renew_failed()
 
-    def start_renew_thread(self):
+    def start_renew_thread(self) -> Thread:
         self._renew_thread = Thread(target=self._renew_thread_func, daemon=True)
         self._renew_thread.start()
+        return self._renew_thread
 
     def _on_renew_failed(self):
         self.logger.critical(f"[{self._conf['topic']}]Send SIGTERM to self...")
