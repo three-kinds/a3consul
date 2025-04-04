@@ -13,6 +13,7 @@ class NodeWatcher(abc.ABC):
         self._conf = conf
         self._client = Consul(**self._conf["init"])
         self._last_node_id_set: Set[str] | None = None
+        self._should_stop = False
 
     @abc.abstractmethod
     def _handle_first_node_id_set(self, node_id_set: Set[str]):
@@ -22,8 +23,11 @@ class NodeWatcher(abc.ABC):
     def _on_change(self, online_node_id_set: Set[str], offline_node_id_set: Set[str]):
         raise NotImplementedError()
 
+    def set_should_stop(self, should_stop: bool):
+        self._should_stop = should_stop
+
     def _check_should_stop(self) -> bool:
-        return False
+        return self._should_stop
 
     def start(self):
         self.logger.info("Starting...")

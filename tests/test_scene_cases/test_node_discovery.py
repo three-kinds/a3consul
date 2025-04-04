@@ -25,10 +25,6 @@ class NodeWatcher(BaseNodeWatcher):
         self.offline_node_id_set = offline_node_id_set
 
 
-def _always_return_true() -> bool:
-    return True
-
-
 _count = 0
 
 
@@ -108,7 +104,7 @@ class TestNodeDiscovery(TestCase):
         }
 
         node_watcher = NodeWatcher(conf=watcher_conf)
-        node_watcher._check_should_stop = _always_return_true
+        node_watcher.set_should_stop(True)
 
         watcher_thread = Thread(target=node_watcher.start, daemon=True)
         watcher_thread.start()
