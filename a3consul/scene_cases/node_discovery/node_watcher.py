@@ -22,7 +22,7 @@ class NodeWatcher(abc.ABC):
     def _on_change(self, online_node_id_set: Set[str], offline_node_id_set: Set[str]):
         raise NotImplementedError()
 
-    def _should_stop(self) -> bool:
+    def _check_should_stop(self) -> bool:
         return False
 
     def start(self):
@@ -51,5 +51,5 @@ class NodeWatcher(abc.ABC):
                 else:
                     self.logger.debug("No change.")
 
-            if self._should_stop():
+            if self._check_should_stop():
                 break

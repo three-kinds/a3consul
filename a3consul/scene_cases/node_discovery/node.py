@@ -20,6 +20,7 @@ class Node:
         self._client: Optional[Consul] = None
         self._session_id: Optional[str] = None
         self._renew_thread: Optional[Thread] = None
+        self._renew_thread_should_stop = False
 
     def register_node_id(self) -> str:
         self._client = Consul(**self._conf["init"])
@@ -32,6 +33,21 @@ class Node:
         self._client.kv.put(key=node_path, value="", acquire=self._session_id)
         self.logger.info(f"[{self._conf['topic']}]Register node id: {node_id}.")
         return node_id
+
+    def close(self):
+        self._renew_thread_should_stop = True
+        if self._renew_thread is not None:
+            if self._renew_thread.is_alive():
+                self.logger.info(f"[{self._conf['topic']}]Waiting for renew thread stop...")
+                self._renew_thread.join()
+                self._renew_thread = None
+        self.logger.info(f"[{self._conf['topic']}]Renew thread stopped.")
+
+        if self._session_id is not None:
+            self._client.session.destroy(session_id=self._session_id)
+            self._session_id = None
+            self._client = None
+            self.logger.info(f"[{self._conf['topic']}]Close session: {self._session_id}.")
 
     def _renew_session(self, timeout_seconds: float) -> bool:
         assert self._client is not None
@@ -55,6 +71,9 @@ class Node:
         patch_http_client_request_with_timeout(self._client, per_request_timeout_seconds)
 
         while True:
+            if self._renew_thread_should_stop:
+                break
+
             is_success = self._renew_session(timeout_seconds=conf["timeout_seconds"])
             if is_success:
                 sleep_seconds = conf["sleep_seconds"]

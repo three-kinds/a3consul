@@ -108,7 +108,7 @@ class TestNodeDiscovery(TestCase):
         }
 
         node_watcher = NodeWatcher(conf=watcher_conf)
-        node_watcher._should_stop = _always_return_true
+        node_watcher._check_should_stop = _always_return_true
 
         watcher_thread = Thread(target=node_watcher.start, daemon=True)
         watcher_thread.start()
@@ -124,7 +124,7 @@ class TestNodeDiscovery(TestCase):
         node1.start_renew_thread()
 
         node_watcher = NodeWatcher(conf=watcher_conf)
-        node_watcher._should_stop = _return_true_after_one_call
+        node_watcher._check_should_stop = _return_true_after_one_call
         watcher_thread = Thread(target=node_watcher.start, daemon=True)
         watcher_thread.start()
         watcher_thread.join(timeout=2)
@@ -138,3 +138,5 @@ class TestNodeDiscovery(TestCase):
         self.assertEqual(node_watcher.online_node_id_set, {node2_id})
         self.assertEqual(len(node_watcher.offline_node_id_set), 0)
         self.assertEqual(watcher_thread.is_alive(), False)
+        node1.close()
+        node2.close()
