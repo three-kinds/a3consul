@@ -1,24 +1,23 @@
 # a3consul
 
-English | [简体中文](README_ZH.md)
+[English](README.md) | 简体中文
 
-`a3consul` is a simple wrapper around `py-consul` to make it easier to use.
+`a3consul` 对 `py-consul` 做了简单的封装，目的是用起来更简单。
 
-## 1. Introduction
+## 1. 简介
 
-* Provide encapsulation for `Node Discovery`.
+* 提供`节点发现`场景的封装
 
+## 2. 使用
 
-## 2. Usage
-
-### Install
+### 安装
 
 ```shell
 pip install a3consul
 
 ```
 
-### Examples: Node Discovery
+### 样例：节点发现
 
 * Node
 
